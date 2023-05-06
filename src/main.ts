@@ -126,6 +126,8 @@ export async function run(): Promise<void> {
       throw new Error(`invalid input received for gcloud_component: ${gcloudComponent}`);
     }
     const useJob = job && !service;
+    const serviceWithMetadata = metadata && service;
+    const jobWithMetadata = metadata && job;
 
     // Find base command
     if (revTraffic || tagTraffic) {
@@ -154,7 +156,7 @@ export async function run(): Promise<void> {
           logWarning(`Updating traffic, ignoring "${key}" input`);
         }
       }
-    } else if (metadata) {
+    } else if (serviceWithMetadata) {
       cmd = ['run', 'services', 'replace', metadata];
 
       const providedButIgnored: Record<string, boolean> = {
@@ -176,6 +178,8 @@ export async function run(): Promise<void> {
           logWarning(`Using metadata YAML, ignoring "${key}" input`);
         }
       }
+    } else if (jobWithMetadata) {
+      cmd = ['run', 'jobs', 'replace', metadata];
     } else if (useJob) {
       cmd = ['run', 'jobs', 'update', job, '--quiet'];
 
