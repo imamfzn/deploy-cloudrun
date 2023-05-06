@@ -95,7 +95,7 @@ export async function run(): Promise<void> {
     const gcloudComponent = presence(getInput('gcloud_component')); // Cloud SDK component version
     const envVars = getInput('env_vars'); // String of env vars KEY=VALUE,...
     const envVarsFile = getInput('env_vars_file'); // File that is a string of env vars KEY=VALUE,...
-    const secrets = parseKVString(getInput('secrets')); // String of secrets KEY=VALUE,...
+    const secrets = parseKVStringAndFile(getInput('secrets'), getInput('secrets_file')); // String of secrets KEY=VALUE,...
     const region = getInput('region') || 'us-central1';
     const source = getInput('source'); // Source directory
     const suffix = getInput('suffix');
@@ -189,6 +189,7 @@ export async function run(): Promise<void> {
       if (compiledEnvVars && Object.keys(compiledEnvVars).length > 0) {
         cmd.push('--update-env-vars', kvToString(compiledEnvVars));
       }
+
       if (secrets && Object.keys(secrets).length > 0) {
         cmd.push('--update-secrets', kvToString(secrets));
       }
